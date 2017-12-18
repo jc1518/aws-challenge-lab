@@ -76,7 +76,7 @@
             ],
             "Condition": {
                 "ArnEquals": {
-                    "ec2:Vpc": "arn:aws:ec2:us-west-2:431525257644:vpc/*"
+                    "ec2:Vpc": "arn:aws:ec2:us-west-2:431525257644:vpc/<Replace with your VPC ID>"
                 }
             }
         },
