@@ -1,0 +1,14 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab User",
+	
+	"Resources": {
+		"labuser": {
+			 "Type": "AWS::IAM::User",
+	  	"Properties": {
+	    	"Groups": ["aws-challenge-lab-users"]
+	  	}			
+		}
+	}
+}

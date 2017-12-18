@@ -1,0 +1,112 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Jumpbox",
+
+  "Parameters": {
+    "InstanceType": {
+      "Description": "EC2 instance type",
+      "Type": "String",
+      "Default": "t2.micro"
+    },
+    "ImageId": {
+      "Description": "AMI ID to launch",
+      "Type": "String",
+      "Default": "ami-32d8124a"
+    },
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+      "Type": "String",
+      "Default": "aws-challenge-lab"
+    },
+    "TagName": {
+      "Description": "Tag for EC2 Name",
+      "Type": "String",
+      "Default": "aws-challenge-lab-jumpbox"
+    },
+    "TagBu": {
+      "Description": "Tag for Business Unit",
+      "Type": "String",
+      "Default": "News Technology Shared Services"
+    },
+    "TagEnvironment": {
+      "Description": "Tag for Environment",
+      "Type": "String",
+      "Default": "dev"
+    },
+    "TagProduct": {
+      "Description": "Tag for Product",
+      "Type": "String",
+      "Default": "poc"
+    }
+  },    
+
+  "Resources": {
+    "JumpboxInstance": {
+      "Properties": {
+        "ImageId": {
+          "Ref": "ImageId"
+        },
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "SecurityGroupIds": [
+          {
+            "Fn::ImportValue": "JumpboxAWSChallengeLabId"
+          }
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "SubnetPubAId"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "TagName"
+            }
+          },
+          {
+            "Key": "Bu",
+            "Value": {
+              "Ref": "TagBu"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "TagEnvironment"
+            }
+          },
+          {
+            "Key": "Product",
+            "Value": {
+              "Ref": "TagProduct"
+            }
+          },
+          {
+            "Key": "Preserve",
+            "Value": "True"
+          }             
+        ]
+      },
+      "Type": "AWS::EC2::Instance"
+    },
+
+    "JumpboxEIP" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : { "Ref" : "JumpboxInstance" }
+      }
+    }  
+  },
+
+  "Outputs": {
+    "JumpboxIp": {
+      "Value": {"Ref": "JumpboxEIP"},
+      "Export": {"Name": "JumpboxIp"}
+    }
+  }
+}

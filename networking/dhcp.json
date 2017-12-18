@@ -1,0 +1,27 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab DHCP",
+
+  "Resources": {
+    "DHCPOpt": {
+      "Type": "AWS::EC2::DHCPOptions",
+      "Properties": {
+        "DomainName": "us-west-2.compute.internal",
+        "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ]
+      }
+    },
+
+    "DHCPAsso": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "DhcpOptionsId": {
+          "Ref": "DHCPOpt"
+        }
+      }
+    }
+  }
+}  	

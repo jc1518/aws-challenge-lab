@@ -1,0 +1,167 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Sunbets",
+
+  "Resources": {
+    "PubRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "abc-public-subnets"
+          }
+        ]
+      }
+    },
+
+    "PubRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PubRouteTable"
+        },
+        "GatewayId": {"Fn::ImportValue": "IGWId"}
+      }
+    },  	
+
+    "SubnetPubARoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriARouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPubAId"}
+      },
+      "DependsOn" : "PubRouteTable"
+    }, 
+
+    "SubnetPubBRoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriBRouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPubBId"}
+      },
+      "DependsOn" : "PubRouteTable"
+    },  
+
+    "SubnetPubCRoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriCRouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPubCId"}
+      },
+      "DependsOn" : "PubRouteTable"
+    },    
+
+    "PriARouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "a-private-subnet"
+          }
+        ]
+      }
+    },
+
+    "PriARoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PriARouteTable"
+        },
+        "NatGatewayId": {"Fn::ImportValue": "NATAId"}
+      }
+    },
+
+    "SubnetPriARoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriARouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPriAId"}
+      }
+    }, 
+
+    "PriBRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "b-private-subnet"
+          }
+        ]
+      }
+    },    
+
+    "PriBRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PriBRouteTable"
+        },
+        "NatGatewayId": {"Fn::ImportValue": "NATBId"}
+      }
+    },    
+
+    "SubnetPriBRoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriBRouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPriBId"}
+      }
+    }, 
+
+    "PriCRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c-private-subnet"
+          }
+        ]
+      }
+    },
+
+    "PriCRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PriCRouteTable"
+        },
+        "NatGatewayId": {"Fn::ImportValue": "NATCId"}
+      }
+    },
+
+    "SubnetPriCRoute": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PriCRouteTable"
+        },
+        "SubnetId": {"Fn::ImportValue": "SubnetPriCId"}
+      }
+    }
+  }
+}
+

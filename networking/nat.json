@@ -1,0 +1,90 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Gateway",
+
+  "Resources": {
+
+		"EIPA": {
+	  	"Type": "AWS::EC2::EIP",
+	  	"Properties": {
+	    	"Domain": "vpc"
+	  	}
+		},
+
+	  "NATA": {
+	  	"Type": "AWS::EC2::NatGateway",
+	  	"Properties": {
+	    	"AllocationId": {"Fn::GetAtt": ["EIPA", "AllocationId"]},
+	    	"SubnetId": {"Fn::ImportValue": "SubnetPubAId"},
+	    	"Tags": [
+          {
+            "Key": "Name",
+            "Value": "NAT-a-private"
+          }
+        ]
+	  	}
+		},
+
+		"EIPB": {
+	  	"Type": "AWS::EC2::EIP",
+	  	"Properties": {
+	    	"Domain": "vpc"
+	  	}
+		},
+
+	  "NATB": {
+	  	"Type": "AWS::EC2::NatGateway",
+	  	"Properties": {
+	    	"AllocationId": {"Fn::GetAtt": ["EIPB", "AllocationId"]},
+	    	"SubnetId": {"Fn::ImportValue": "SubnetPubBId"},
+	    	"Tags": [
+          {
+            "Key": "Name",
+            "Value": "NAT-b-private"
+          }
+        ]	    	
+	  	}
+		},
+
+		"EIPC": {
+	  	"Type": "AWS::EC2::EIP",
+	  	"Properties": {
+	    	"Domain": "vpc"
+	  	}
+		},
+
+	  "NATC": {
+	  	"Type": "AWS::EC2::NatGateway",
+	  	"Properties": {
+	    	"AllocationId": {"Fn::GetAtt": ["EIPC", "AllocationId"]},
+	    	"SubnetId": {"Fn::ImportValue": "SubnetPubCId"},
+	    	"Tags": [
+          {
+            "Key": "Name",
+            "Value": "NAT-c-private"
+          }
+        ]	    	
+	  	}
+		}
+	},		
+
+  "Outputs": {
+    "NATAId": {
+      "Value": {"Ref": "NATA"},
+      "Export": {"Name": "NATAId"}
+    },
+
+    "NATBId": {
+      "Value": {"Ref": "NATB"},
+      "Export": {"Name": "NATBId"}
+    },
+
+    "NATCId": {
+      "Value": {"Ref": "NATC"},
+      "Export": {"Name": "NATCId"}
+    }
+  }
+}
+
+

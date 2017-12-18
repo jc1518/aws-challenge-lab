@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab VPC",
+
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "172.31.0.0/16",
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AWS-Challenge-Lab"
+          }
+        ]
+      }
+    }
+  },
+
+  "Outputs": {
+    "VPCId": {
+      "Value": {"Ref": "VPC"},
+      "Export": {"Name": "VPCId"}
+    }
+  }
+}

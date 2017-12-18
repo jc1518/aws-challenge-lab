@@ -1,0 +1,31 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Internet Gateway",
+
+  "Resources": {
+
+    "IGW": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+      }
+    },  
+
+    "VPCGW": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "InternetGatewayId": {
+          "Ref": "IGW"
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+   	"IGWId": {
+    	"Value": {"Ref": "IGW"},
+      "Export": {"Name": "IGWId"}
+    }
+  }
+}

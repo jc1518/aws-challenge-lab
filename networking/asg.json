@@ -1,0 +1,390 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AWS Challenge Lab Autoscaling group",
+  "Parameters": {
+    "ASGHealthCheckGracePeriod": {
+      "Default": "300",
+      "Type": "String"
+    },
+    "ELBHealthyThreshold": {
+      "Default": "2",
+      "Description": "Specifies the number of consecutive health probe successes required before moving the instance to the Healthy state.",
+      "Type": "String"
+    },
+    "ELBInstancePort": {
+      "Default": "80",
+      "Description": "Specifies the TCP port on which the instance server is listening.",
+      "Type": "String"
+    },
+    "ELBInterval": {
+      "Default": "30",
+      "Description": "Specifies the approximate interval, in seconds, between health checks of an individual instance.",
+      "Type": "String"
+    },
+    "ELBLoadBalancerPort": {
+      "Default": "80",
+      "Description": "Specifies the external load balancer port number.",
+      "Type": "String"
+    },
+    "ELBProtocol": {
+      "Default": "HTTP",
+      "Description": "Specifies the load balancer transport protocol to use for routing — HTTP, HTTPS, TCP or SSL.",
+      "Type": "String"
+    },
+    "ELBTarget": {
+      "Default": "HTTP:80/",
+      "Description": "Specifies the instance being checked. The protocol is either TCP or HTTP. The range of valid ports is 1 through 65535.",
+      "Type": "String"
+    },
+    "ELBTimeout": {
+      "Default": "5",
+      "Description": "Specifies the amount of time, in seconds, during which no response means a failed health probe. This value must be less than the value for Interval.",
+      "Type": "String"
+    },
+    "ELBUnhealthyThreshold": {
+      "Default": "2",
+      "Description": "Specifies the number of consecutive health probe failures required before moving the instance to the Unhealthy state.",
+      "Type": "String"
+    },
+    "ImageId": {
+      "Description": "AMI ID to launch",
+      "Type": "String",
+      "Default": "ami-32d8124a"
+    },
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+      "Type": "String",
+      "Default": "aws-challenge-lab"
+    },
+    "MetricName": {
+      "Default": "CPUUtilization",
+      "Description": "The name for the alarm's associated metric.",
+      "Type": "String"
+    },
+    "ScaleDownCooldown": {
+      "Default": "300",
+      "Description": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.",
+      "Type": "String"
+    },
+    "ScaleDownEvaluationPeriods": {
+      "Default": "4",
+      "Description": "The number of periods over which data is compared to the specified threshold.",
+      "Type": "String"
+    },
+    "ScaleDownPeriod": {
+      "Default": "60",
+      "Description": "The period in seconds over which the specified statistic is applied.",
+      "Type": "String"
+    },
+    "ScaleDownScalingAdjustment": {
+      "Default": "-1",
+      "Description": "The number of instances by which to scale.",
+      "Type": "String"
+    },
+    "ScaleDownStatistic": {
+      "Default": "Average",
+      "Description": "The statistic to apply to the alarm's associated metric.",
+      "Type": "String"
+    },
+    "ScaleDownThreshold": {
+      "Default": "30",
+      "Description": "The value against which the specified statistic is compared.",
+      "Type": "String"
+    },
+    "ScaleUpCooldown": {
+      "Default": "60",
+      "Description": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.",
+      "Type": "String"
+    },
+    "ScaleUpEvaluationPeriods": {
+      "Default": "3",
+      "Description": "The number of periods over which data is compared to the specified threshold.",
+      "Type": "String"
+    },
+    "ScaleUpPeriod": {
+      "Default": "60",
+      "Description": "The period in seconds over which the specified statistic is applied.",
+      "Type": "String"
+    },
+    "ScaleUpScalingAdjustment": {
+      "Default": "1",
+      "Description": "The number of instances by which to scale.",
+      "Type": "String"
+    },
+    "ScaleUpStatistic": {
+      "Default": "Average",
+      "Description": "The statistic to apply to the alarm's associated metric.",
+      "Type": "String"
+    },
+    "ScaleUpThreshold": {
+      "Default": "80",
+      "Description": "The value against which the specified statistic is compared.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "AlarmHigh": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "ScaleUpPolicy"
+          }
+        ],
+        "AlarmDescription": "Autoscale Scale Up Alarm",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "AutoScaleGroup"
+            }
+          }
+        ],
+        "EvaluationPeriods": {
+          "Ref": "ScaleUpEvaluationPeriods"
+        },
+        "MetricName": {
+          "Ref": "MetricName"
+        },
+        "Namespace": "AWS/EC2",
+        "Period": {
+          "Ref": "ScaleUpPeriod"
+        },
+        "Statistic": {
+          "Ref": "ScaleUpStatistic"
+        },
+        "Threshold": {
+          "Ref": "ScaleUpThreshold"
+        }
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "AlarmLow": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "ScaleDownPolicy"
+          }
+        ],
+        "AlarmDescription": "Autoscale Scale Down Alarm",
+        "ComparisonOperator": "LessThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "AutoScaleGroup"
+            }
+          }
+        ],
+        "EvaluationPeriods": {
+          "Ref": "ScaleDownEvaluationPeriods"
+        },
+        "MetricName": {
+          "Ref": "MetricName"
+        },
+        "Namespace": "AWS/EC2",
+        "Period": {
+          "Ref": "ScaleUpPeriod"
+        },
+        "Statistic": {
+          "Ref": "ScaleDownStatistic"
+        },
+        "Threshold": {
+          "Ref": "ScaleDownThreshold"
+        }
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "AutoScaleGroup": {
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::GetAZs": ""
+        },
+        "HealthCheckGracePeriod": {
+          "Ref": "ASGHealthCheckGracePeriod"
+        },
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "ElasticLoadBalancer"
+          }
+        ],
+        "MaxSize": "1",
+        "MinSize": "1",
+        "Tags": [
+          {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "aws-challenge-lab-ec2"
+          },
+          {
+            "Key": "Bu",
+            "PropagateAtLaunch": true,
+            "Value": "News Technology Shared Services"
+          },
+          {
+            "Key": "Environment",
+            "PropagateAtLaunch": true,
+            "Value": "dev"
+          },
+          {
+            "Key": "Product",
+            "PropagateAtLaunch": true,
+            "Value": "poc"
+          },
+          {
+            "Key": "Preserve",
+            "PropagateAtLaunch": true,
+            "Value": "True"
+          }          
+        ],
+        "VPCZoneIdentifier": [
+          {"Fn::ImportValue": "SubnetPriAId"},
+          {"Fn::ImportValue": "SubnetPriBId"},
+          {"Fn::ImportValue": "SubnetPriCId"}
+        ]
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup"
+    },
+    "ScaleDownPolicy": {
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "AutoScaleGroup"
+        },
+        "Cooldown": {
+          "Ref": "ScaleDownCooldown"
+        },
+        "ScalingAdjustment": {
+          "Ref": "ScaleDownScalingAdjustment"
+        }
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy"
+    },
+    "ScaleUpPolicy": {
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "AutoScaleGroup"
+        },
+        "Cooldown": {
+          "Ref": "ScaleUpCooldown"
+        },
+        "ScalingAdjustment": {
+          "Ref": "ScaleUpScalingAdjustment"
+        }
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy"
+    },    
+    "ElasticLoadBalancer": {
+      "Properties": {
+        "CrossZone": "true",
+        "HealthCheck": {
+          "HealthyThreshold": {
+            "Ref": "ELBHealthyThreshold"
+          },
+          "Interval": {
+            "Ref": "ELBInterval"
+          },
+          "Target": {
+            "Ref": "ELBTarget"
+          },
+          "Timeout": {
+            "Ref": "ELBTimeout"
+          },
+          "UnhealthyThreshold": {
+            "Ref": "ELBUnhealthyThreshold"
+          }
+        },
+        "Listeners": [
+          {
+            "InstancePort": {
+              "Ref": "ELBInstancePort"
+            },
+            "LoadBalancerPort": {
+              "Ref": "ELBLoadBalancerPort"
+            },
+            "Protocol": {
+              "Ref": "ELBProtocol"
+            }
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Fn::ImportValue": "ELBAWSChallengeLabId"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "aws-challenge-lab-elb"
+          },
+          {
+            "Key": "Bu",
+            "Value": "News Technology Shared Services"
+          },
+          {
+            "Key": "Environment",
+            "Value": "dev"
+          },
+          {
+            "Key": "Product",
+            "Value": "poc"
+          },
+          {
+            "Key": "Preserve",
+            "Value": "True"
+          }          
+        ],        
+        "Scheme": "internet-facing",
+        "Subnets": [
+          {"Fn::ImportValue": "SubnetPubAId"},
+          {"Fn::ImportValue": "SubnetPubBId"},
+          {"Fn::ImportValue": "SubnetPubCId"}
+        ]
+      },
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer"
+    },
+    "LaunchConfig": {
+      "Properties": {
+        "AssociatePublicIpAddress": "false",
+        "ImageId": {
+          "Ref": "ImageId"
+        },
+        "InstanceType": "t2.micro",
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "SecurityGroups": [
+          {"Fn::ImportValue": "EC2AWSChallengeLabId"}
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -ex\n",
+                "yum -y install git\n",
+                "git clone https://github.com/jc1518/aws-challenge-lab.git\n",
+                "cd aws-challenge-lab\n",
+                "pip install -r requirements.txt\n",
+                "export FLASK_APP=hello_world.py\n",
+                "/usr/local/bin/flask run --host=0.0.0.0 >> /var/log/hello_world.log 2>&1 &\n",
+                "$CFNDIR/cfn-signal -e 0\n"
+              ]
+            ]
+          }
+        }
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration"
+    }
+  },
+  "Outputs": {
+    "ELBEndpoint": {
+      "Value": {"Fn::GetAtt": ["ElasticLoadBalancer", "DNSName"]},
+      "Export": {"Name": "ELBEndpoint"}
+    }
+  }
+}

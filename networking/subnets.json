@@ -1,0 +1,136 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Sunbets",
+
+  "Resources": {
+    "SubnetPubA": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.31.0.0/20",
+        "AvailabilityZone": "us-west-2a",
+        "MapPublicIpOnLaunch": "true",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AZ-a-public"
+          }
+        ]
+      }
+    },
+
+    "SubnetPubB": {
+    	"Type": "AWS::EC2::Subnet",
+     	"Properties": {
+      	"CidrBlock": "172.31.16.0/20",
+        "AvailabilityZone": "us-west-2b",
+        "MapPublicIpOnLaunch": "true",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+        	{
+          	"Key": "Name",
+          	"Value": "AZ-b-public"
+          }
+        ]
+      }
+    },
+
+    "SubnetPubC": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.31.32.0/20",
+        "AvailabilityZone": "us-west-2c",
+        "MapPublicIpOnLaunch": "true",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AZ-c-public"
+          }
+        ]
+      }
+    },
+
+    "SubnetPriA": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.31.48.0/20",
+        "AvailabilityZone": "us-west-2a",
+        "MapPublicIpOnLaunch": "false",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AZ-a-private"
+          }
+        ]
+      }
+    },
+
+    "SubnetPriB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.31.64.0/20",
+        "AvailabilityZone": "us-west-2b",
+        "MapPublicIpOnLaunch": "false",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AZ-b-private"
+          }
+        ]
+      }
+    },
+
+    "SubnetPriC": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.31.80.0/20",
+        "AvailabilityZone": "us-west-2c",
+        "MapPublicIpOnLaunch": "false",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AZ-c-private"
+          }
+        ]
+      }
+    }
+  },
+
+   "Outputs": {
+    "SubnetPubAId": {
+      "Value": {"Ref": "SubnetPubA"},
+      "Export": {"Name": "SubnetPubAId"}
+    },
+
+    "SubnetPubBId": {
+      "Value": {"Ref": "SubnetPubB"},
+      "Export": {"Name": "SubnetPubBId"}
+    },
+
+    "SubnetPubCId": {
+      "Value": {"Ref": "SubnetPubC"},
+      "Export": {"Name": "SubnetPubCId"}
+    },
+
+    "SubnetPriAId": {
+      "Value": {"Ref": "SubnetPriA"},
+      "Export": {"Name": "SubnetPriAId"}
+    },
+
+    "SubnetPriBId": {
+      "Value": {"Ref": "SubnetPriB"},
+      "Export": {"Name": "SubnetPriBId"}
+    },
+
+    "SubnetPriCId": {
+      "Value": {"Ref": "SubnetPriC"},
+      "Export": {"Name": "SubnetPriCId"}
+    }   
+  }
+}
+

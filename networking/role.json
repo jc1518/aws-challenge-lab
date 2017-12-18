@@ -1,0 +1,102 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "NonResourceBasedEc2Permissions",
+            "Action": [
+                "ec2:Describe*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:Region": "us-west-2"
+                }
+            }
+        },
+        {
+            "Sid": "NonResourceBasedELBASGPermissions",
+            "Action": [
+                "elasticloadbalancing:Describe*",
+                "autoscaling:Describe*",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:DescribeAlarms"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Sid": "ResourceBasedELBPermissions",
+            "Action": [
+                "elasticloadbalancing:ConfigureHealthCheck",
+                "elasticloadbalancing:CreateListener",
+                "elasticloadbalancing:CreateLoadBalancerListeners",
+                "elasticloadbalancing:DeleteListener",
+                "elasticloadbalancing:DeleteLoadBalancerListeners",
+                "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                "elasticloadbalancing:ModifyListener",
+                "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                "elasticloadbalancing:SetLoadBalancerPoliciesOfListener"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:elasticloadbalancing:us-west-2:431525257644:loadbalancer/*"
+        },
+        {
+            "Sid": "AllowInstanceActions",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RebootInstances",
+                "ec2:StopInstances",
+                "ec2:StartInstances",
+                "ec2:AttachVolume",
+                "ec2:DetachVolume"
+            ],
+            "Resource": "arn:aws:ec2:us-west-2:431525257644:instance/*",
+            "Condition": {
+                "StringLike": {
+                    "ec2:ResourceTag/Name": "aws-challenge-lab*"
+                }
+            }
+        },
+        {
+            "Sid": "EC2VpcNonresourceSpecificActions1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateRoute",
+                "ec2:DeleteNetworkAclEntry",
+                "ec2:DeleteRoute",
+                "ec2:ReplaceRoute",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "ArnEquals": {
+                    "ec2:Vpc": "arn:aws:ec2:us-west-2:431525257644:vpc/*"
+                }
+            }
+        },
+        {
+            "Sid": "EC2VpcNonresourceSpecificActions2",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AssociateRouteTable",
+                "ec2:CreateNetworkAclEntry",
+                "ec2:DisassociateRouteTable",
+                "ec2:ReplaceRouteTableAssociation"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "ec2:Region": "us-west-2"
+                }
+            }
+        }
+    ]
+}

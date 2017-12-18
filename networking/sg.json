@@ -1,0 +1,181 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS Challenge Lab Security Groups",
+
+  "Resources": {
+    "ELBAWSChallengeLab": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "AWS Challenge Lab ELB",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ELBAWSChallengeLab"
+          }
+        ]
+      }
+    },  	
+
+    "ELBAWSChallengeLabEgress01": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ELBAWSChallengeLab"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    }, 
+
+    "ELBAWSChallengeLabIngress01": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ELBAWSChallengeLab"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },     
+
+    "ELBAWSChallengeLabIngress02": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ELBAWSChallengeLab"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },    
+
+    "EC2AWSChallengeLab": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "AWS Challenge Lab EC2",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "EC2AWSChallengeLab"
+          }
+        ]        
+      }
+    },
+
+    "EC2AWSChallengeLabEgress01": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EC2AWSChallengeLab"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },    
+
+    "EC2AWSChallengeLabIngress01": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EC2AWSChallengeLab"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "SourceSecurityGroupId": {
+          "Ref": "ELBAWSChallengeLab"
+        }
+      }
+    },     
+
+    "EC2AWSChallengeLabIngress02": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EC2AWSChallengeLab"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "SourceSecurityGroupId": {
+          "Ref": "JumpboxAWSChallengeLab"
+        }
+      }
+    },  
+
+    "JumpboxAWSChallengeLab": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "AWS Challenge Lab Jumpbox",
+        "VpcId": {"Fn::ImportValue": "VPCId"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "JumpboxAWSChallengeLab"
+          }
+        ]        
+      }
+    },
+
+    "JumpboxAWSChallengeLabEgress01": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "JumpboxAWSChallengeLab"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },    
+
+    "JumpboxAWSChallengeLabIngress01": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "JumpboxAWSChallengeLab"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "165.69.28.7/32"
+      }
+    }
+  },
+
+  "Outputs": {
+    "ELBAWSChallengeLabId": {
+      "Value": {"Ref": "ELBAWSChallengeLab"},
+      "Export": {"Name": "ELBAWSChallengeLabId"}
+    },
+
+    "EC2AWSChallengeLabId": {
+      "Value": {"Ref": "EC2AWSChallengeLab"},
+      "Export": {"Name": "EC2AWSChallengeLabId"}
+    },
+
+    "JumpboxAWSChallengeLabId": {
+      "Value": {"Ref": "JumpboxAWSChallengeLab"},
+      "Export": {"Name": "JumpboxAWSChallengeLabId"}
+    }
+  }   
+}     
+
+
+
+
+
+
+
+
+
+
+
+
+
