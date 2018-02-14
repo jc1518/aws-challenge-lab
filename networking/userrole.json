@@ -39,7 +39,7 @@
                 "elasticloadbalancing:SetLoadBalancerPoliciesOfListener"
             ],
             "Effect": "Allow",
-            "Resource": "arn:aws:elasticloadbalancing:us-west-2:431525257644:loadbalancer/*"
+            "Resource": "arn:aws:elasticloadbalancing:us-west-2:xxxxxxxxxxxx:loadbalancer/*"
         },
         {
             "Sid": "AllowInstanceActions",
@@ -51,7 +51,7 @@
                 "ec2:AttachVolume",
                 "ec2:DetachVolume"
             ],
-            "Resource": "arn:aws:ec2:us-west-2:431525257644:instance/*",
+            "Resource": "arn:aws:ec2:us-west-2:xxxxxxxxxxxx:instance/*",
             "Condition": {
                 "StringLike": {
                     "ec2:ResourceTag/Name": "aws-challenge-lab*"
@@ -76,7 +76,7 @@
             ],
             "Condition": {
                 "ArnEquals": {
-                    "ec2:Vpc": "arn:aws:ec2:us-west-2:431525257644:vpc/<Replace with your VPC ID>"
+                    "ec2:Vpc": "arn:aws:ec2:us-west-2:xxxxxxxxxxxx:vpc/<Replace with your VPC ID>"
                 }
             }
         },
